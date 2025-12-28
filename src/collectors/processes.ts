@@ -79,9 +79,9 @@ async function collectProcess(pid: number, totalMemory: number): Promise<Process
   // cmdline is null-separated
   const cmdline = cmdlineContent?.replace(/\0/g, " ").trim() || stat.comm;
 
-  // Convert times from clock ticks to milliseconds
-  const userTimeMs = (stat.utime / CLK_TCK) * 1000;
-  const systemTimeMs = (stat.stime / CLK_TCK) * 1000;
+  // Convert times from clock ticks to milliseconds (rounded to integers for bigint columns)
+  const userTimeMs = Math.round((stat.utime / CLK_TCK) * 1000);
+  const systemTimeMs = Math.round((stat.stime / CLK_TCK) * 1000);
   const totalCpuTimeMs = userTimeMs + systemTimeMs;
 
   // RSS is in pages, convert to bytes (page size is usually 4096)
